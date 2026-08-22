@@ -4,13 +4,23 @@ import re
 from blacklist import BLACKLIST  # 👈 Импортируем чёрный список
 
 def is_blacklisted(url):
-    """Проверяет, содержит ли URL путь из чёрного списка."""
+    """Проверяет, содержит ли URL путь из чёрного списка для этого домена."""
     parsed = urlparse(url)
-    path = parsed.path.lower()
+    domain = parsed.netloc.lower()
     
-    for blocked in BLACKLIST:
-        if blocked in path:
-            return True
+    # Убираем www. если есть
+    if domain.startswith('www.'):
+        domain = domain[4:]
+    
+    path = parsed.path.lower().rstrip('/')
+    
+    # Если для этого домена есть чёрный список
+    if domain in BLACKLIST:
+        for blocked in BLACKLIST[domain]:
+            blocked_clean = blocked.rstrip('/')
+            if blocked_clean in path:
+                return True
+    
     return False
 
 def extract_links_from_url(url, base_url=None):
@@ -74,7 +84,7 @@ def extract_links_from_url(url, base_url=None):
 # ═══════════════════════════════════════════════
 # 🔥 ЗДЕСЬ ССЫЛКА ДЛЯ ПАРСИНГА
 # ═══════════════════════════════════════════════
-SOURCE_URL = "https://azbyka.ru/otechnik/Lazar_Abashidze/novye-dorogi-v-ad-rok-muzyka/"
+SOURCE_URL = "https://azbyka.ru/otechnik/Lazar_Abashidze/tainstvo-ispovedi/"
 # ═══════════════════════════════════════════════
 
 def get_links():
