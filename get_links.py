@@ -96,6 +96,7 @@ def get_links():
     else:
         print("   ❌ Ссылок не найдено")
     return links
+    #return ['https://azbyka.ru/otechnik/Biblia/tolkovanie-svjashhennogo-pisanija-u-ottsov-tserkvi-tom-2/']
 
 if __name__ == "__main__":
     links = get_links()
