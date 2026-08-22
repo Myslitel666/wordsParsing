@@ -1,11 +1,22 @@
 import requests
 from urllib.parse import urljoin, urlparse
 import re
+from blacklist import BLACKLIST  # 👈 Импортируем чёрный список
+
+def is_blacklisted(url):
+    """Проверяет, содержит ли URL путь из чёрного списка."""
+    parsed = urlparse(url)
+    path = parsed.path.lower()
+    
+    for blocked in BLACKLIST:
+        if blocked in path:
+            return True
+    return False
 
 def extract_links_from_url(url, base_url=None):
     """
     Извлекает все ссылки со страницы.
-    Возвращает список абсолютных URL.
+    Возвращает список абсолютных URL (без мусора).
     """
     try:
         headers = {
@@ -25,6 +36,11 @@ def extract_links_from_url(url, base_url=None):
     pattern = re.compile(r'href\s*=\s*["\']([^"\']+)["\']', re.IGNORECASE)
     raw_links = pattern.findall(html)
     
+    # Расширения, которые нужно исключить
+    SKIP_EXTENSIONS = ('.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico', '.webp',
+                       '.json', '.xml', '.css', '.js', '.pdf', '.zip', '.rar',
+                       '.mp4', '.mp3', '.avi', '.mkv', '.exe', '.dmg')
+    
     absolute_links = []
     seen = set()
     parsed_base = urlparse(base_url)
@@ -38,7 +54,15 @@ def extract_links_from_url(url, base_url=None):
         if '#' in full_url:
             full_url = full_url.split('#')[0]
         
-        # Оставляем только ссылки на тот же домен
+        # 1. Пропускаем расширения файлов
+        if full_url.lower().endswith(SKIP_EXTENSIONS):
+            continue
+        
+        # 2. Проверяем чёрный список
+        if is_blacklisted(full_url):
+            continue
+        
+        # 3. Оставляем только ссылки на тот же домен
         parsed_full = urlparse(full_url)
         if parsed_base.netloc == parsed_full.netloc and full_url not in seen:
             seen.add(full_url)
@@ -50,7 +74,7 @@ def extract_links_from_url(url, base_url=None):
 # ═══════════════════════════════════════════════
 # 🔥 ЗДЕСЬ ССЫЛКА ДЛЯ ПАРСИНГА
 # ═══════════════════════════════════════════════
-SOURCE_URL = "https://azbyka.ru/otechnik/Lazar_Abashidze/golos-zabotlivogo-predosterezhenija/"
+SOURCE_URL = "https://azbyka.ru/otechnik/Lazar_Abashidze/novye-dorogi-v-ad-rok-muzyka/"
 # ═══════════════════════════════════════════════
 
 def get_links():

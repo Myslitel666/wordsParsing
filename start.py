@@ -4,6 +4,8 @@ import requests
 import time
 from get_links import get_links
 
+MIN_WORDS = 400  # Минимальное количество слов для вставки
+
 def extract_russian_words_from_url(url):
     """Извлекает только русские слова из HTML-страницы."""
     try:
@@ -36,44 +38,68 @@ def extract_russian_words_from_url(url):
     
     return sorted(words)
 
-def save_words_to_db(words, db_path='words.db'):
-    """Сохраняет слова в базу SQLite."""
-    try:
-        conn = sqlite3.connect(db_path)
-        cursor = conn.cursor()
-        
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS Words (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                value TEXT UNIQUE NOT NULL
-            )
-        ''')
-        conn.commit()
-        
-    except sqlite3.Error as e:
-        print(f"❌ Ошибка подключения к БД: {e}")
+def save_words_to_db(words, db_path='words.db', max_retries=5):
+    """Сохраняет слова в базу SQLite с повторными попытками при блокировке."""
+    
+    # 🔥 ПРОВЕРКА: если слов меньше порога — пропускаем
+    if len(words) < MIN_WORDS:
+        print(f"   ⏭️ Пропущено: всего {len(words)} слов (меньше {MIN_WORDS})")
         return
     
-    total = len(words)
-    inserted = 0
-    skipped = 0
-    
-    for word in words:
+    for attempt in range(max_retries):
         try:
-            cursor.execute('INSERT OR IGNORE INTO Words (value) VALUES (?)', (word,))
+            conn = sqlite3.connect(db_path, timeout=10)
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS Words (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    value TEXT UNIQUE NOT NULL
+                )
+            ''')
             conn.commit()
             
-            if cursor.rowcount > 0:
-                inserted += 1
-                print(f"✅ Записано: {word}")
+            total = len(words)
+            inserted = 0
+            skipped = 0
+            
+            for word in words:
+                try:
+                    cursor.execute('INSERT OR IGNORE INTO Words (value) VALUES (?)', (word,))
+                    conn.commit()
+                    
+                    if cursor.rowcount > 0:
+                        inserted += 1
+                        print(f"✅ Записано: {word}")
+                    else:
+                        skipped += 1
+                        
+                except sqlite3.OperationalError as e:
+                    if 'locked' in str(e):
+                        print(f"⚠️ База заблокирована, попытка {attempt+1}/{max_retries}...")
+                        conn.close()
+                        time.sleep(2)
+                        break
+                    else:
+                        print(f"⚠️ Ошибка: {e}")
+            
+            conn.close()
+            print(f"   ➡️ Вставлено: {inserted}, пропущено: {skipped}")
+            return True
+            
+        except sqlite3.OperationalError as e:
+            if 'locked' in str(e) and attempt < max_retries - 1:
+                print(f"⚠️ База заблокирована, повторная попытка {attempt+2}/{max_retries}...")
+                time.sleep(2)
+                continue
             else:
-                skipped += 1
-                
-        except sqlite3.Error as e:
-            print(f"⚠️ Ошибка при вставке слова '{word}': {e}")
+                print(f"❌ Ошибка: {e}")
+                return False
+        except Exception as e:
+            print(f"❌ Ошибка: {e}")
+            return False
     
-    conn.close()
-    print(f"   ➡️ Вставлено: {inserted}, пропущено: {skipped}")
+    return False
 
 def main():
     # Получаем ссылки из get_links.py
