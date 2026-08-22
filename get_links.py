@@ -84,7 +84,7 @@ def extract_links_from_url(url, base_url=None):
 # ═══════════════════════════════════════════════
 # 🔥 ЗДЕСЬ ССЫЛКА ДЛЯ ПАРСИНГА
 # ═══════════════════════════════════════════════
-SOURCE_URL = "https://azbyka.ru/otechnik/Lazar_Abashidze/tainstvo-ispovedi/"
+SOURCE_URL = "https://libcat.ru/knigi/religioznaya-literatura/ezoterika/293816-tiya-aleksander-god-2150.html#text"
 # ═══════════════════════════════════════════════
 
 def get_links():
