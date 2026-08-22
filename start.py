@@ -1,6 +1,7 @@
 import re
 import sqlite3
 import requests
+import time
 
 def extract_russian_words_from_url(url):
     """Извлекает только русские слова из HTML-страницы."""
@@ -12,7 +13,7 @@ def extract_russian_words_from_url(url):
         response.raise_for_status()
         html = response.text
     except requests.exceptions.RequestException as e:
-        print(f"❌ Ошибка загрузки страницы: {e}")
+        print(f"❌ Ошибка загрузки страницы {url}: {e}")
         return []
 
     # Удаляем теги
@@ -56,8 +57,6 @@ def save_words_to_db(words, db_path='words.db'):
     inserted = 0
     skipped = 0
     
-    print(f"📝 Найдено {total} уникальных русских слов. Начинаю запись в БД...")
-    
     for word in words:
         try:
             cursor.execute('INSERT OR IGNORE INTO Words (value) VALUES (?)', (word,))
@@ -73,22 +72,37 @@ def save_words_to_db(words, db_path='words.db'):
             print(f"⚠️ Ошибка при вставке слова '{word}': {e}")
     
     conn.close()
-    print(f"\n✅ Готово! Вставлено: {inserted}, пропущено (дубликаты): {skipped}")
-    print(f"📁 База данных: {db_path}")
+    print(f"   ➡️ Вставлено: {inserted}, пропущено: {skipped}")
 
 # ═══════════════════════════════════════════════
-# 🔥 ЗДЕСЬ ВАША ССЫЛКА (меняйте на любую)
+# 🔥 СПИСОК ССЫЛОК (добавляйте сколько угодно)
 # ═══════════════════════════════════════════════
-URL = "https://azbyka.ru/otechnik/Lazar_Abashidze/greh-adamov/"
+URLS = [
+    "https://azbyka.ru/otechnik/Lazar_Abashidze/greh-i-pokajanie-poslednih-vremen/1",
+    "https://azbyka.ru/otechnik/Lazar_Abashidze/greh-i-pokajanie-poslednih-vremen/2",
+    # Добавляйте новые ссылки сюда
+]
 # ═══════════════════════════════════════════════
 
 def main():
-    print(f"🌐 Загружаю страницу: {URL}")
-    words = extract_russian_words_from_url(URL)
-    if words:
-        save_words_to_db(words)
-    else:
-        print("❌ Не удалось извлечь слова.")
+    total_words = set()
+    
+    for i, url in enumerate(URLS, 1):
+        print(f"\n🌐 [{i}/{len(URLS)}] Загружаю: {url}")
+        words = extract_russian_words_from_url(url)
+        
+        if words:
+            print(f"   📝 Найдено {len(words)} слов")
+            save_words_to_db(words)
+            total_words.update(words)
+        else:
+            print("   ❌ Не удалось извлечь слова.")
+        
+        # Пауза между запросами, чтобы не перегружать сервер
+        if i < len(URLS):
+            time.sleep(1)
+    
+    print(f"\n🎯 ВСЕГО УНИКАЛЬНЫХ СЛОВ СО ВСЕХ СТРАНИЦ: {len(total_words)}")
 
 if __name__ == "__main__":
     main()
