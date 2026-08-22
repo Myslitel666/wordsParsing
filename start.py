@@ -3,8 +3,20 @@ import sqlite3
 import requests
 import time
 from get_links import get_links
+from datetime import datetime
 
 MIN_WORDS = 400  # Минимальное количество слов для вставки
+LOG_FILE = 'inserted_words.log'  # Файл для логов
+
+def log_word(word, db_path='words.db'):
+    """Записывает добавленное слово в лог-файл."""
+    try:
+        with open(LOG_FILE, 'a', encoding='utf-8') as f:
+            # Пишем слово и время
+            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            f.write(f"{timestamp} | {word}\n")
+    except Exception as e:
+        print(f"⚠️ Ошибка записи в лог: {e}")
 
 def extract_russian_words_from_url(url):
     """Извлекает только русские слова из HTML-страницы."""
@@ -63,6 +75,15 @@ def save_words_to_db(words, db_path='words.db', max_retries=5):
             inserted = 0
             skipped = 0
             
+            # Записываем в лог информацию о начале обработки страницы
+            try:
+                with open(LOG_FILE, 'a', encoding='utf-8') as f:
+                    f.write(f"\n{'='*60}\n")
+                    f.write(f"📅 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+                    f.write(f"{'='*60}\n")
+            except:
+                pass
+            
             for word in words:
                 try:
                     cursor.execute('INSERT OR IGNORE INTO Words (value) VALUES (?)', (word,))
@@ -71,6 +92,8 @@ def save_words_to_db(words, db_path='words.db', max_retries=5):
                     if cursor.rowcount > 0:
                         inserted += 1
                         print(f"✅ Записано: {word}")
+                        # 🔥 Записываем слово в лог
+                        log_word(word)
                     else:
                         skipped += 1
                         
@@ -82,6 +105,13 @@ def save_words_to_db(words, db_path='words.db', max_retries=5):
                         break
                     else:
                         print(f"⚠️ Ошибка: {e}")
+            
+            # Записываем статистику в лог
+            try:
+                with open(LOG_FILE, 'a', encoding='utf-8') as f:
+                    f.write(f"\n📊 Вставлено: {inserted}, пропущено: {skipped}\n")
+            except:
+                pass
             
             conn.close()
             print(f"   ➡️ Вставлено: {inserted}, пропущено: {skipped}")
@@ -111,6 +141,16 @@ def main():
     
     total_words = set()
     
+    # Записываем в лог начало работы
+    try:
+        with open(LOG_FILE, 'a', encoding='utf-8') as f:
+            f.write(f"\n\n{'🚀'*30}\n")
+            f.write(f"НАЧАЛО РАБОТЫ: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write(f"ВСЕГО ССЫЛОК: {len(URLS)}\n")
+            f.write(f"{'🚀'*30}\n\n")
+    except:
+        pass
+    
     for i, url in enumerate(URLS, 1):
         print(f"\n🌐 [{i}/{len(URLS)}] Загружаю: {url}")
         words = extract_russian_words_from_url(url)
@@ -127,6 +167,16 @@ def main():
             time.sleep(1)
     
     print(f"\n🎯 ВСЕГО УНИКАЛЬНЫХ СЛОВ СО ВСЕХ СТРАНИЦ: {len(total_words)}")
+    
+    # Записываем в лог итог
+    try:
+        with open(LOG_FILE, 'a', encoding='utf-8') as f:
+            f.write(f"\n{'🎯'*30}\n")
+            f.write(f"ИТОГОВОЕ КОЛИЧЕСТВО СЛОВ: {len(total_words)}\n")
+            f.write(f"ЗАВЕРШЕНО: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+            f.write(f"{'🎯'*30}\n")
+    except:
+        pass
 
 if __name__ == "__main__":
     main()
