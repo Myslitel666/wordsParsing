@@ -1,6 +1,6 @@
 import requests
 from urllib.parse import urljoin, urlparse
-import sys
+import re
 
 def extract_links_from_url(url, base_url=None):
     """
@@ -18,34 +18,29 @@ def extract_links_from_url(url, base_url=None):
         print(f"❌ Ошибка загрузки страницы: {e}")
         return []
 
-    # Если базовый URL не указан, берём из текущей страницы
     if base_url is None:
         base_url = url
 
     # Ищем все теги <a href="...">
-    import re
-    # Упрощённый поиск: ищем href="..." или href='...'
     pattern = re.compile(r'href\s*=\s*["\']([^"\']+)["\']', re.IGNORECASE)
     raw_links = pattern.findall(html)
     
     absolute_links = []
     seen = set()
+    parsed_base = urlparse(base_url)
     
     for raw_link in raw_links:
-        # Пропускаем якоря (#глава) и пустые ссылки
         if not raw_link or raw_link.startswith('#') or raw_link.startswith('javascript:'):
             continue
             
-        # Превращаем относительную ссылку в абсолютную
         full_url = urljoin(base_url, raw_link)
         
-        # Убираем якоря внутри URL (всё после #)
         if '#' in full_url:
             full_url = full_url.split('#')[0]
         
-        # Проверяем, что ссылка ведёт на тот же домен (опционально)
-        # Можно убрать это условие, если нужны все ссылки
-        if full_url.startswith('http') and full_url not in seen:
+        # Оставляем только ссылки на тот же домен
+        parsed_full = urlparse(full_url)
+        if parsed_base.netloc == parsed_full.netloc and full_url not in seen:
             seen.add(full_url)
             absolute_links.append(full_url)
     
@@ -53,21 +48,22 @@ def extract_links_from_url(url, base_url=None):
 
 
 # ═══════════════════════════════════════════════
-# 🔥 ЗДЕСЬ ССЫЛКА ДЛЯ ТЕСТА
+# 🔥 ЗДЕСЬ ССЫЛКА ДЛЯ ПАРСИНГА
 # ═══════════════════════════════════════════════
-URL = "https://azbyka.ru/otechnik/Lazar_Abashidze/greh-i-pokajanie-poslednih-vremen/"
+SOURCE_URL = "https://azbyka.ru/otechnik/Lazar_Abashidze/golos-zabotlivogo-predosterezhenija/"
 # ═══════════════════════════════════════════════
 
-def main():
-    print(f"🌐 Загружаю: {URL}")
-    links = extract_links_from_url(URL)
-    
+def get_links():
+    """Возвращает список ссылок для обработки."""
+    print(f"🔗 Собираю ссылки с: {SOURCE_URL}")
+    links = extract_links_from_url(SOURCE_URL)
     if links:
-        print(f"\n📝 Найдено ссылок: {len(links)}")
-        for i, link in enumerate(links, 1):
-            print(f"{i:3}. {link}")
+        print(f"   📝 Найдено ссылок: {len(links)}")
     else:
-        print("❌ Ссылок не найдено или ошибка загрузки.")
+        print("   ❌ Ссылок не найдено")
+    return links
 
 if __name__ == "__main__":
-    main()
+    links = get_links()
+    for i, link in enumerate(links, 1):
+        print(f"{i:3}. {link}")

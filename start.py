@@ -2,6 +2,7 @@ import re
 import sqlite3
 import requests
 import time
+from get_links import get_links
 
 def extract_russian_words_from_url(url):
     """Извлекает только русские слова из HTML-страницы."""
@@ -74,17 +75,14 @@ def save_words_to_db(words, db_path='words.db'):
     conn.close()
     print(f"   ➡️ Вставлено: {inserted}, пропущено: {skipped}")
 
-# ═══════════════════════════════════════════════
-# 🔥 СПИСОК ССЫЛОК (добавляйте сколько угодно)
-# ═══════════════════════════════════════════════
-URLS = [
-    "https://azbyka.ru/otechnik/Lazar_Abashidze/greh-i-pokajanie-poslednih-vremen/1",
-    "https://azbyka.ru/otechnik/Lazar_Abashidze/greh-i-pokajanie-poslednih-vremen/2",
-    # Добавляйте новые ссылки сюда
-]
-# ═══════════════════════════════════════════════
-
 def main():
+    # Получаем ссылки из get_links.py
+    URLS = get_links()
+    
+    if not URLS:
+        print("❌ Нет ссылок для обработки. Проверьте get_links.py")
+        return
+    
     total_words = set()
     
     for i, url in enumerate(URLS, 1):
@@ -98,7 +96,7 @@ def main():
         else:
             print("   ❌ Не удалось извлечь слова.")
         
-        # Пауза между запросами, чтобы не перегружать сервер
+        # Пауза между запросами
         if i < len(URLS):
             time.sleep(1)
     
