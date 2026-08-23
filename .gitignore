@@ -1,3 +1,9 @@
+# Python кеш
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
 # Базы данных SQLite
 *.db-journal
 *.db-wal

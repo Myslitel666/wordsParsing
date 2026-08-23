@@ -84,7 +84,7 @@ def extract_links_from_url(url, base_url=None):
 # ═══════════════════════════════════════════════
 # 🔥 ЗДЕСЬ ССЫЛКА ДЛЯ ПАРСИНГА
 # ═══════════════════════════════════════════════
-SOURCE_URL = "https://azbyka.ru/otechnik/Iustin_Filosof/s_trifonom/"
+SOURCE_URL = "https://azbyka.ru/otechnik/Simeon_Novyj_Bogoslov/"
 # ═══════════════════════════════════════════════
 
 def get_links():
