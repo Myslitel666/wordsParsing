@@ -17,7 +17,7 @@ def wait_for_internet(host='8.8.8.8', port=53, timeout=3):
             return True
         except socket.error:
             print("🌐 Нет интернета. Жду 15 секунд...")
-            time.sleep(15)
+            time.sleep(8)
 
 def log_word(word):
     try:
@@ -47,7 +47,11 @@ def extract_russian_words_from_url(url):
         w = w.strip('-')
         if re.fullmatch(r'[а-яА-ЯёЁ\-]+', w):
             if len(w) > 1 and len(w) <= 30:
-                words.add(w.lower())
+                # Если слово не написано капсом (не аббревиаутра) — добавляем
+                if w.isupper():
+                    words.add(w)  # аббревиатуры в исходном регистре
+                else:
+                    words.add(w.lower())  # привет → привет
     
     return sorted(words)
 
@@ -135,7 +139,7 @@ def main():
             print("   ❌ Не удалось извлечь слова.")
         
         if i < len(URLS):
-            time.sleep(15)
+            time.sleep(1)
     
     print(f"\n🎯 ВСЕГО УНИКАЛЬНЫХ СЛОВ СО ВСЕХ СТРАНИЦ: {len(total_words)}")
 
