@@ -86,7 +86,7 @@ def extract_links_from_url(url, base_url=None):
 # 🔥 ЦИКЛ ПО СТРАНИЦАМ: 6 – 9 физика пройден, ИТ 1-3, МАТ 1-3, ХИМ 1-3, ПРАВО 1-3
 # ═══════════════════════════════════════════════
 URLS_TO_PARSE = [
-    "https://azbyka.ru/otechnik/Dmitrij_Rostovskij/"
+    "https://azbyka.ru/otechnik/Iustin_Filosof/s_trifonom/"
 ]
 
 def get_links():
