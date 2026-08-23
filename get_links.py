@@ -87,7 +87,7 @@ def extract_links_from_url(url, base_url=None):
 # ═══════════════════════════════════════════════
 PAGE_START = 1
 PAGE_END = 3
-BASE_URL = "https://cyberleninka.ru/article/c/computer-and-information-sciences"
+BASE_URL = "https://cyberleninka.ru/article/c/computer-and-information-sciences/"
 
 def get_links():
     """Собирает ссылки со всех страниц в диапазоне."""
