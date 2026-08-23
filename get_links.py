@@ -84,7 +84,7 @@ def extract_links_from_url(url, base_url=None):
 # ═══════════════════════════════════════════════
 # 🔥 ЗДЕСЬ ССЫЛКА ДЛЯ ПАРСИНГА
 # ═══════════════════════════════════════════════
-SOURCE_URL = "https://cyberleninka.ru/article/c/physical-sciences"
+SOURCE_URL = "https://cyberleninka.ru/article/c/physical-sciences/5"
 # ═══════════════════════════════════════════════
 
 def get_links():
