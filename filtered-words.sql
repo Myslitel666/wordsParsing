@@ -30,10 +30,16 @@ WHERE (
 )
 AND value not in ('уст','акт', 'иоан', 'иоал')
 UNION ALL
--- Исключаем все слова, которые содержат дефис вторым символом
+-- Исключаем слова, которые содержат дефис, но состоят при этом из небольшого количества букв
 SELECT * FROM Words 
-  WHERE value LIKE '_-%'
-  AND value NOT LIKE 'в%' -- оставляем слова типа 'в-третьих';
+WHERE value LIKE '%-%'
+  AND LENGTH(value) in (3,4,5)
+  AND value not in ('из-за')
+UNION ALL
+-- Исключаем все слова, которые содержат дефис вторым или предпоследним символом
+SELECT * FROM Words 
+WHERE (value LIKE '_-%' AND value NOT LIKE 'в%') -- оставляем слова типа 'в-третьих';
+  OR substr(value,-2,1) = '-'
 UNION ALL
 -- Несколько дефисов
 SELECT *
@@ -50,9 +56,25 @@ WHERE value LIKE '%-%-%'
     'славянск-на-кубани'
 )
 UNION ALL
--- Старинные кончания на -ися
-SELECT w.value
-FROM Words w
-    WHERE 
-      (SUBSTR(w.value,-3) = 'ися' AND SUBSTR(w.value,-4) != 'мися')
-      OR SUBSTR(w.value,-3) = 'ыти'
+-- Старинные кончания на -ися, -шии, -иша
+SELECT *
+FROM Words
+WHERE (
+    substr(value,-3) = 'аще' -- аще
+    AND value NOT IN ('чаще','почаще', 'слаще')
+)
+OR (SUBSTR(value,-3) = 'ися' AND SUBSTR(value,-4) != 'мися')
+OR (
+    substr(value,-3) = 'иша' -- иша
+    AND value NOT IN ('клавиша','афиша')
+)
+OR (
+    substr(value,-3) = 'ища' -- ища
+    AND value NOT IN ('ища')
+)
+OR (
+    substr(value,-3) = 'шии' -- шии
+    AND (substr(value,-4,1) GLOB '[бвгджзйклмнпрстфхцчшщ]' OR LENGTH(value) = 3)
+)
+OR SUBSTR(value,-3) = 'ыти' -- ыти
+OR substr(value,-3) = 'яще' -- яще

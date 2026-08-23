@@ -65,13 +65,45 @@ def save_words_to_db(words, db_path='words.db', max_retries=5):
             conn = sqlite3.connect(db_path, timeout=10)
             cursor = conn.cursor()
             
+            # Таблица для обычных слов
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS Words (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     value TEXT UNIQUE NOT NULL
                 )
             ''')
-            conn.commit()
+
+            # Таблица для стран
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS Countries (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    value TEXT UNIQUE NOT NULL
+                )
+            ''')
+            
+            # Таблица для городов
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS Cities (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    value TEXT UNIQUE NOT NULL
+                )
+            ''')
+            
+            # Таблица для имён
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS Names (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    value TEXT UNIQUE NOT NULL
+                )
+            ''')
+
+            # Таблица для аббревиатур
+            cursor.execute('''
+                CREATE TABLE IF NOT EXISTS Abbreviations (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    value TEXT UNIQUE NOT NULL
+                )
+            ''')
             
             inserted = 0
             skipped = 0

@@ -11,40 +11,12 @@ BLACKLIST = {
         '/images/',
         '/js/',
         '/css/',
-        '/assets/',
-        
-        # Служебные разделы
-        # '/search',
-        # '/about',
-        # '/contacts',
-        # '/feedback',
-        # '/authors',
-        # '/collections',
-        # '/journals',
-        # '/conferences',
-        # '/help',
-        # '/sitemap',
-        # '/news',
-        # '/blog',
-        # '/login',
-        # '/register',
-        # '/profile',
-        # '/settings',
-        
-        # # Разделы навигации
-        # '/categories',
-        # '/tags',
-        # '/popular',
-        # '/new',
-        # '/archive',
-        
-        # # Внешние ссылки
-        # 'yandex',
-        # 'google',
-        # 'mail.ru',
+        '/assets/'
     ],
     'azbyka.ru': [
-        # Главные разделы (мусор)
+        'https://azbyka.ru/otechnik/Biblia2/6-dnej-tvorenija/',
+
+        # Главные разделы
         '/otechnik/settings/',
         '/otechnik/assets/',
         '/otechnik/profile/',

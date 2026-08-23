@@ -86,7 +86,7 @@ def extract_links_from_url(url, base_url=None):
 # 🔥 ЦИКЛ ПО СТРАНИЦАМ: 6 – 9 физика пройден, ИТ 1-3, МАТ 1-3, ХИМ 1-3, ПРАВО 1-3
 # ═══════════════════════════════════════════════
 URLS_TO_PARSE = [
-    "https://azbyka.ru/otechnik/Dmitrij_Dobykin/pravoslavnoe-uchenie-o-tolkovanii-svjashhennogo-pisanija/"
+    'https://azbyka.ru/otechnik/Biblia2/'
 ]
 
 def get_links():
@@ -107,7 +107,7 @@ def get_links():
     
     print(f"\n✅ ВСЕГО СОБРАНО ССЫЛОК: {len(all_links)}")
     return all_links
-    #return ['https://azbyka.ru/otechnik/Biblia2/6-dnej-tvorenija/']
+    #return ['https://azbyka.ru/otechnik/Biblia2/']
 
 
 if __name__ == "__main__":
