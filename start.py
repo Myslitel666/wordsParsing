@@ -81,14 +81,6 @@ def save_words_to_db(words, db_path='words.db', max_retries=5):
                 )
             ''')
             
-            # Таблица для городов
-            cursor.execute('''
-                CREATE TABLE IF NOT EXISTS Cities (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    value TEXT UNIQUE NOT NULL
-                )
-            ''')
-            
             # Таблица для имён
             cursor.execute('''
                 CREATE TABLE IF NOT EXISTS Names (
