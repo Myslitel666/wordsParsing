@@ -43,7 +43,7 @@ def extract_links_from_url(url, base_url=None):
         base_url = url
 
     # Ищем все теги <a href="...">
-    pattern = re.compile(r'href\s*=\s*["\']([^"\']+)["\']', re.IGNORECASE)
+    pattern = re.compile(r'href\s*=\s*["\']?([^"\'\s>]+)["\']?', re.IGNORECASE)
     raw_links = pattern.findall(html)
     
     # Расширения, которые нужно исключить
@@ -84,7 +84,7 @@ def extract_links_from_url(url, base_url=None):
 # ═══════════════════════════════════════════════
 # 🔥 ЗДЕСЬ ССЫЛКА ДЛЯ ПАРСИНГА
 # ═══════════════════════════════════════════════
-SOURCE_URL = "https://azbyka.ru/otechnik/Feofan_Zatvornik/"
+SOURCE_URL = "https://azbyka.ru/otechnik/Iustin_Filosof/s_trifonom/"
 # ═══════════════════════════════════════════════
 
 def get_links():
@@ -96,7 +96,37 @@ def get_links():
     else:
         print("   ❌ Ссылок не найдено")
     return links
-    #return ['https://azbyka.ru/otechnik/Biblia/tolkovanie-svjashhennogo-pisanija-u-ottsov-tserkvi-tom-2/']
+    # return [
+    #     'https://lib.ru/INOOLD/BALZAK/shagren.txt',
+    #     'https://lib.ru/INOOLD/BALZAK/shedevr.txt',
+    #     'https://lib.ru/INOOLD/BALZAK/gorio.txt',
+    #     'https://lib.ru/INOOLD/BALZAK/illusinos.txt',
+    #     'https://lib.ru/INOOLD/BALZAK/balzak_contrakt.txt',
+    #     'https://lib.ru/INOOLD/BALZAK/balzak_obednya.txt',
+    #     'https://lib.ru/INOOLD/BALZAK/balzak_poruchenie.txt',
+    #     'https://lib.ru/INOOLD/BALZAK/balzak_zh.txt',
+    #     'https://lib.ru/INOOLD/BALZAK/balzak_daugter.txt',
+    #     'https://lib.ru/INOOLD/BALZAK/gobsek.txt',
+    #     'https://lib.ru/INOOLD/BALZAK/balz_opeka.txt',
+    #     'https://lib.ru/INOOLD/BALZAK/balz_onorina.txt',
+    #     'https://lib.ru/INOOLD/BALZAK/balz_alber.txt',
+    #     'https://lib.ru/INOOLD/BALZAK/balz_lover.txt',
+    #     'https://lib.ru/INOOLD/BALZAK/balz_pieretta.txt',
+    #     'https://lib.ru/INOOLD/BALZAK/muza.txt',
+    #     'https://lib.ru/INOOLD/BALZAK/balzak_eliksir.txt',
+    #             'https://lib.ru/INOOLD/BALZAK/13_3roug.txt',
+    #             'https://lib.ru/INOOLD/BALZAK/13_4metr.txt',
+    #             'https://lib.ru/INOOLD/BALZAK/13_7abso.txt',
+    #             'https://lib.ru/INOOLD/BALZAK/13_7dram.txt',
+    #             'https://lib.ru/INOOLD/BALZAK/13_8melm.txt',
+    #             'https://lib.ru/INOOLD/BALZAK/antmus.txt',
+    #             'https://lib.ru/INOOLD/BALZAK/balzak3.txt',
+    #             'https://lib.ru/INOOLD/BALZAK/egrande.txt',
+    #             'https://lib.ru/INOOLD/BALZAK/godiss.txt',
+    #             'https://lib.ru/INOOLD/BALZAK/balzak_bale.txt',
+    #             'https://lib.ru/INOOLD/BALZAK/s_komedia.txt'
+        
+    # ]
 
 if __name__ == "__main__":
     links = get_links()
