@@ -14,8 +14,6 @@ BLACKLIST = {
         '/assets/'
     ],
     'azbyka.ru': [
-        'https://azbyka.ru/otechnik/Biblia2/6-dnej-tvorenija/',
-
         # Главные разделы
         '/otechnik/settings/',
         '/otechnik/assets/',
