@@ -83,18 +83,17 @@ def extract_links_from_url(url, base_url=None):
 
 
 # ═══════════════════════════════════════════════
-# 🔥 ЦИКЛ ПО СТРАНИЦАМ: 6 – 9 физика пройден, ИТ 1-3, МАТ 1-3, ХИМ 1-3
+# 🔥 ЦИКЛ ПО СТРАНИЦАМ: 6 – 9 физика пройден, ИТ 1-3, МАТ 1-3, ХИМ 1-3, ПРАВО 1-3
 # ═══════════════════════════════════════════════
-PAGE_START = 1
-PAGE_END = 3
-BASE_URL = "https://cyberleninka.ru/article/c/law/"
+URLS_TO_PARSE = [
+    "https://azbyka.ru/otechnik/Dmitrij_Rostovskij/"
+]
 
 def get_links():
-    """Собирает ссылки со всех страниц в диапазоне."""
+    """Возвращает список ссылок для обработки."""
     all_links = []
     
-    for page in range(PAGE_START, PAGE_END + 1):
-        url = f"{BASE_URL}{page}"
+    for url in URLS_TO_PARSE:
         print(f"🔗 Собираю ссылки с: {url}")
         links = extract_links_from_url(url)
         
