@@ -5,7 +5,7 @@ import time
 import socket
 from get_links import get_links
 
-MIN_WORDS = 400
+MIN_WORDS = 150
 LOG_FILE = 'inserted_words.log'
 
 def wait_for_internet(host='8.8.8.8', port=53, timeout=3):
@@ -16,7 +16,7 @@ def wait_for_internet(host='8.8.8.8', port=53, timeout=3):
             socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
             return True
         except socket.error:
-            print("🌐 Нет интернета. Жду 5 секунд...")
+            print("🌐 Нет интернета. Жду 15 секунд...")
             time.sleep(15)
 
 def log_word(word):
@@ -135,7 +135,7 @@ def main():
             print("   ❌ Не удалось извлечь слова.")
         
         if i < len(URLS):
-            time.sleep(1)
+            time.sleep(15)
     
     print(f"\n🎯 ВСЕГО УНИКАЛЬНЫХ СЛОВ СО ВСЕХ СТРАНИЦ: {len(total_words)}")
 

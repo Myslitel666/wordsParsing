@@ -2,6 +2,47 @@
 # 🔥 ЧЁРНЫЙ СПИСОК ПО ДОМЕНАМ
 # ════════════════════════════════════════════════════════════════
 BLACKLIST = {
+    'cyberleninka.ru': [
+        # Технические страницы
+        '/terms.html',
+        '/policy.html',
+        '/app.css',
+        '/fonts/',
+        '/images/',
+        '/js/',
+        '/css/',
+        '/assets/',
+        
+        # Служебные разделы
+        # '/search',
+        # '/about',
+        # '/contacts',
+        # '/feedback',
+        # '/authors',
+        # '/collections',
+        # '/journals',
+        # '/conferences',
+        # '/help',
+        # '/sitemap',
+        # '/news',
+        # '/blog',
+        # '/login',
+        # '/register',
+        # '/profile',
+        # '/settings',
+        
+        # # Разделы навигации
+        # '/categories',
+        # '/tags',
+        # '/popular',
+        # '/new',
+        # '/archive',
+        
+        # # Внешние ссылки
+        # 'yandex',
+        # 'google',
+        # 'mail.ru',
+    ],
     'azbyka.ru': [
         # Главные разделы (мусор)
         '/otechnik/settings/',

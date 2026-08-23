@@ -2,6 +2,7 @@ import requests
 from urllib.parse import urljoin, urlparse
 import re
 from blacklist import BLACKLIST  # 👈 Импортируем чёрный список
+import time
 
 def is_blacklisted(url):
     """Проверяет, содержит ли URL путь из чёрного списка для этого домена."""
@@ -49,7 +50,7 @@ def extract_links_from_url(url, base_url=None):
     # Расширения, которые нужно исключить
     SKIP_EXTENSIONS = ('.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico', '.webp',
                        '.json', '.xml', '.css', '.js', '.pdf', '.zip', '.rar',
-                       '.mp4', '.mp3', '.avi', '.mkv', '.exe', '.dmg')
+                       '.mp4', '.mp3', '.avi', '.mkv', '.exe', '.dmg' , '.woff' , '.woff2')
     
     absolute_links = []
     seen = set()
@@ -82,51 +83,32 @@ def extract_links_from_url(url, base_url=None):
 
 
 # ═══════════════════════════════════════════════
-# 🔥 ЗДЕСЬ ССЫЛКА ДЛЯ ПАРСИНГА
+# 🔥 ЦИКЛ ПО СТРАНИЦАМ: 6 – 9
 # ═══════════════════════════════════════════════
-SOURCE_URL = "https://cyberleninka.ru/article/c/physical-sciences/5"
-# ═══════════════════════════════════════════════
+PAGE_START = 6
+PAGE_END = 9
+BASE_URL = "https://cyberleninka.ru/article/c/physical-sciences/"
 
 def get_links():
-    """Возвращает список ссылок для обработки."""
-    print(f"🔗 Собираю ссылки с: {SOURCE_URL}")
-    links = extract_links_from_url(SOURCE_URL)
-    if links:
-        print(f"   📝 Найдено ссылок: {len(links)}")
-    else:
-        print("   ❌ Ссылок не найдено")
-    return links
-    return [
-        'http://az.lib.ru/editors/t/tolstoj_lew_nikolaewich/text_1260.shtml',
-        'http://az.lib.ru/t/tolstoj_lew_nikolaewich/text_1906_bojeskoe_i_chelovecheskoe.shtml',
-        'http://az.lib.ru/t/tolstoj_lew_nikolaewich/text_0770-1.shtml',
-        'http://az.lib.ru/t/tolstoj_lew_nikolaewich/text_0810.shtml'
-        'http://az.lib.ru/t/tolstoj_lew_nikolaewich/text_1360.shtml',
-        'http://az.lib.ru/t/tolstoj_lew_nikolaewich/text_1240.shtml',
-        'http://az.lib.ru/t/tolstoj_lew_nikolaewich/text_0370.shtml',
-        'http://az.lib.ru/t/tolstoj_lew_nikolaewich/text_0680.shtml',
-        'http://az.lib.ru/t/tolstoj_lew_nikolaewich/text_0475.shtml',
-        'http://az.lib.ru/t/tolstoj_lew_nikolaewich/text_0190.shtml',
-        'http://az.lib.ru/t/tolstoj_lew_nikolaewich/text_0320.shtml',
-        'https://lib.ru/INOOLD/BALZAK/balz_onorina.txt',
-        'https://lib.ru/INOOLD/BALZAK/balz_alber.txt',
-        'https://lib.ru/INOOLD/BALZAK/balz_lover.txt',
-        'https://lib.ru/INOOLD/BALZAK/balz_pieretta.txt',
-        'https://lib.ru/INOOLD/BALZAK/muza.txt',
-        'https://lib.ru/INOOLD/BALZAK/balzak_eliksir.txt',
-                'https://lib.ru/INOOLD/BALZAK/13_3roug.txt',
-                'https://lib.ru/INOOLD/BALZAK/13_4metr.txt',
-                'https://lib.ru/INOOLD/BALZAK/13_7abso.txt',
-                'https://lib.ru/INOOLD/BALZAK/13_7dram.txt',
-                'https://lib.ru/INOOLD/BALZAK/13_8melm.txt',
-                'https://lib.ru/INOOLD/BALZAK/antmus.txt',
-                'https://lib.ru/INOOLD/BALZAK/balzak3.txt',
-                'https://lib.ru/INOOLD/BALZAK/egrande.txt',
-                'https://lib.ru/INOOLD/BALZAK/godiss.txt',
-                'https://lib.ru/INOOLD/BALZAK/balzak_bale.txt',
-                'https://lib.ru/INOOLD/BALZAK/s_komedia.txt'
+    """Собирает ссылки со всех страниц в диапазоне."""
+    all_links = []
+    
+    for page in range(PAGE_START, PAGE_END + 1):
+        url = f"{BASE_URL}{page}"
+        print(f"🔗 Собираю ссылки с: {url}")
+        links = extract_links_from_url(url)
         
-    ]
+        if links:
+            print(f"   📝 Найдено ссылок: {len(links)}")
+            all_links.extend(links)
+        else:
+            print("   ❌ Ссылок не найдено")
+        
+        time.sleep(1)
+    
+    print(f"\n✅ ВСЕГО СОБРАНО ССЫЛОК: {len(all_links)}")
+    return all_links
+
 
 if __name__ == "__main__":
     links = get_links()

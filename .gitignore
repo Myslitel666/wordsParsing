@@ -10,4 +10,4 @@ __pycache__/
 *.db-shm
 
 #Логи
-.log
+*.log
