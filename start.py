@@ -5,7 +5,7 @@ import time
 import socket
 from get_links import get_links
 
-MIN_WORDS = 1
+MIN_WORDS = 50
 LOG_FILE = 'inserted_words.log'
 
 def wait_for_internet(host='8.8.8.8', port=53, timeout=3):

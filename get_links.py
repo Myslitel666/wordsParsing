@@ -86,7 +86,34 @@ def extract_links_from_url(url, base_url=None):
 # 🔥 ЦИКЛ ПО СТРАНИЦАМ: 6 – 9 физика пройден, ИТ 1-3, МАТ 1-3, ХИМ 1-3, ПРАВО 1-3, ИСТОРИЯ 1-8
 # ═══════════════════════════════════════════════
 URLS_TO_PARSE = [
-    'https://godsbay.ru/orient/', 
+    'https://godsbay.ru/slavs/slavs_myths.html', 
+    'https://godsbay.ru/paint/legenda.html', 
+    'https://godsbay.ru/civilizations/', 
+    'https://godsbay.ru/paint/', 
+    'https://godsbay.ru/antique/',
+    'https://godsbay.ru/orient/mesopotamia.html', 
+    'https://godsbay.ru/egypt/', 
+    'https://godsbay.ru/orient/india.html', 
+    'https://godsbay.ru/celts/', 
+    'https://godsbay.ru/orient/china.html',   
+    'https://godsbay.ru/maya/', 
+    'https://godsbay.ru/vikings/', 
+    'https://godsbay.ru/slavs/', 
+    'https://godsbay.ru/orient/japan.html', 
+    'https://godsbay.ru/about.html',
+    'https://godsbay.ru/civilizations/civilization_egipet.html', 
+    'https://godsbay.ru/civilizations/civilization_mesopotamiya.html', 
+    'https://godsbay.ru/civilizations/civilization_indiya.html', 
+    'https://godsbay.ru/civilizations/ellinskaya_civilization.html', 
+    'https://godsbay.ru/orient/japan.html', 
+        'https://godsbay.ru/civilizations/rimskaya_civilizaciya.html',
+        'https://godsbay.ru/civilizations/varvarsky_mir.html', 
+        'https://godsbay.ru/civilizations/vizantiya.html', 
+        'https://godsbay.ru/civilizations/civilization_islam.html', 
+        'https://godsbay.ru/civilizations/civilization_yaponiya.html', 
+    'https://godsbay.ru/civilizations/srednevekovaya_civilizaciya_zapada.html', 
+    'https://godsbay.ru/civilizations/istoki_industrialnoy_civilizacii.html',
+    'https://godsbay.ru/civilizations/industrialnaya_civilizaciya.html', 
 ]
 
 def get_links():

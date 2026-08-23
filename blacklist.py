@@ -2,6 +2,52 @@
 # 🔥 ЧЁРНЫЙ СПИСОК ПО ДОМЕНАМ
 # ════════════════════════════════════════════════════════════════
 BLACKLIST = {
+        'godsbay.ru': [
+        # Страницы-алфавитные указатели (мусор)
+        '/all.html',
+        '/all_b.html',
+        '/all_v.html',
+        '/all_g.html',
+        '/all_d.html',
+        '/all_e.html',
+        '/all_j.html',
+        '/all_z.html',
+        '/all_i.html',
+        '/all_l.html',
+        '/all_m.html',
+        '/all_n.html',
+        '/all_o.html',
+        '/all_p.html',
+        '/all_r.html',
+        '/all_s.html',
+        '/all_t.html',
+        '/all_f.html',
+        '/all_h.html',
+        '/all_zt.html',
+        '/all_ch.html',
+        '/all_sh.html',
+        '/all_ye.html',
+        '/all_yu.html',
+        '/all_ya.html',
+        '/all1.html',
+        '/all2.html',
+        
+        # Служебные
+        '/about.html',
+        '/index.html',
+        '/civilizations/index.html',
+        
+        # Если есть другие разделы-оглавления
+        '/antique/',
+        '/egypt/',
+        '/celts/',
+        '/vikings/',
+        '/maya/',
+        '/slavs/',
+        '/orient/',
+        '/civilizations/',
+        '/paint/',
+    ],
     'cyberleninka.ru': [
         # Технические страницы
         '/terms.html',
