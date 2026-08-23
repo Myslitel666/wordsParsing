@@ -107,6 +107,7 @@ def get_links():
     
     print(f"\n✅ ВСЕГО СОБРАНО ССЫЛОК: {len(all_links)}")
     return all_links
+    #return ['https://azbyka.ru/otechnik/Biblia2/6-dnej-tvorenija/']
 
 
 if __name__ == "__main__":
