@@ -83,11 +83,11 @@ def extract_links_from_url(url, base_url=None):
 
 
 # ═══════════════════════════════════════════════
-# 🔥 ЦИКЛ ПО СТРАНИЦАМ: 6 – 9 физика пройден, ИТ 1-3, МАТ 1-3
+# 🔥 ЦИКЛ ПО СТРАНИЦАМ: 6 – 9 физика пройден, ИТ 1-3, МАТ 1-3, ХИМ 1-3
 # ═══════════════════════════════════════════════
 PAGE_START = 1
 PAGE_END = 3
-BASE_URL = "https://cyberleninka.ru/article/c/chemical-sciences/"
+BASE_URL = "https://cyberleninka.ru/article/c/law"
 
 def get_links():
     """Собирает ссылки со всех страниц в диапазоне."""
