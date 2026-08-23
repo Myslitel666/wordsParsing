@@ -84,7 +84,7 @@ def extract_links_from_url(url, base_url=None):
 # ═══════════════════════════════════════════════
 # 🔥 ЗДЕСЬ ССЫЛКА ДЛЯ ПАРСИНГА
 # ═══════════════════════════════════════════════
-SOURCE_URL = "https://lib.ru/INOOLD/BALZAK/"
+SOURCE_URL = "https://cyberleninka.ru/article/c/physical-sciences"
 # ═══════════════════════════════════════════════
 
 def get_links():
@@ -95,19 +95,19 @@ def get_links():
         print(f"   📝 Найдено ссылок: {len(links)}")
     else:
         print("   ❌ Ссылок не найдено")
-    #return links
+    return links
     return [
-        'https://lib.ru/INOOLD/BALZAK/shagren.txt',
-        'https://lib.ru/INOOLD/BALZAK/shedevr.txt',
-        'https://lib.ru/INOOLD/BALZAK/gorio.txt',
-        'https://lib.ru/INOOLD/BALZAK/illusinos.txt',
-        'https://lib.ru/INOOLD/BALZAK/balzak_contrakt.txt',
-        'https://lib.ru/INOOLD/BALZAK/balzak_obednya.txt',
-        'https://lib.ru/INOOLD/BALZAK/balzak_poruchenie.txt',
-        'https://lib.ru/INOOLD/BALZAK/balzak_zh.txt',
-        'https://lib.ru/INOOLD/BALZAK/balzak_daugter.txt',
-        'https://lib.ru/INOOLD/BALZAK/gobsek.txt',
-        'https://lib.ru/INOOLD/BALZAK/balz_opeka.txt',
+        'http://az.lib.ru/editors/t/tolstoj_lew_nikolaewich/text_1260.shtml',
+        'http://az.lib.ru/t/tolstoj_lew_nikolaewich/text_1906_bojeskoe_i_chelovecheskoe.shtml',
+        'http://az.lib.ru/t/tolstoj_lew_nikolaewich/text_0770-1.shtml',
+        'http://az.lib.ru/t/tolstoj_lew_nikolaewich/text_0810.shtml'
+        'http://az.lib.ru/t/tolstoj_lew_nikolaewich/text_1360.shtml',
+        'http://az.lib.ru/t/tolstoj_lew_nikolaewich/text_1240.shtml',
+        'http://az.lib.ru/t/tolstoj_lew_nikolaewich/text_0370.shtml',
+        'http://az.lib.ru/t/tolstoj_lew_nikolaewich/text_0680.shtml',
+        'http://az.lib.ru/t/tolstoj_lew_nikolaewich/text_0475.shtml',
+        'http://az.lib.ru/t/tolstoj_lew_nikolaewich/text_0190.shtml',
+        'http://az.lib.ru/t/tolstoj_lew_nikolaewich/text_0320.shtml',
         'https://lib.ru/INOOLD/BALZAK/balz_onorina.txt',
         'https://lib.ru/INOOLD/BALZAK/balz_alber.txt',
         'https://lib.ru/INOOLD/BALZAK/balz_lover.txt',
