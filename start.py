@@ -48,7 +48,7 @@ def extract_russian_words_from_url(url):
         if re.fullmatch(r'[а-яА-ЯёЁ\-]+', w):
             if len(w) > 1 and len(w) <= 30:
                 # Если слово не написано капсом (не аббревиаутра) — добавляем
-                if w.isupper() & len(w) == 3:
+                if w.isupper() and len(w) == 3:
                     words.add(w)  # аббревиатуры в исходном регистре
                 else:
                     words.add(w.lower())  # привет → привет
