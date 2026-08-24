@@ -86,7 +86,35 @@ def extract_links_from_url(url, base_url=None):
 # 🔥 ЦИКЛ ПО СТРАНИЦАМ: 6 – 9 физика пройден, ИТ 1-3, МАТ 1-3, ХИМ 1-3, ПРАВО 1-3, ИСТОРИЯ 1-8
 # ═══════════════════════════════════════════════
 URLS_TO_PARSE = [
-    'https://godsbay.ru/slavs/slavs_myths.html', 
+        # Алфавитные страницы энциклопедии (основной источник)
+    'https://godsbay.ru/all_b.html',
+    'https://godsbay.ru/all_v.html',
+    'https://godsbay.ru/all_g.html',
+    'https://godsbay.ru/all_d.html',
+    'https://godsbay.ru/all_e.html',
+    'https://godsbay.ru/all_j.html',
+    'https://godsbay.ru/all_z.html',
+    'https://godsbay.ru/all_i.html',
+    'https://godsbay.ru/all1.html',      # К
+    'https://godsbay.ru/all_l.html',
+    'https://godsbay.ru/all_m.html',
+    'https://godsbay.ru/all_n.html',
+    'https://godsbay.ru/all_o.html',
+    'https://godsbay.ru/all_p.html',
+    'https://godsbay.ru/all_r.html',
+    'https://godsbay.ru/all_s.html',
+    'https://godsbay.ru/all_t.html',
+    'https://godsbay.ru/all2.html',      # У
+    'https://godsbay.ru/all_f.html',
+    'https://godsbay.ru/all_h.html',
+    'https://godsbay.ru/all_zt.html',    # Ц
+    'https://godsbay.ru/all_ch.html',
+    'https://godsbay.ru/all_sh.html',
+    'https://godsbay.ru/all_ye.html',    # Э
+    'https://godsbay.ru/all_yu.html',
+    'https://godsbay.ru/all_ya.html',
+
+    'https://godsbay.ru/all.html', 
     'https://godsbay.ru/paint/legenda.html', 
     'https://godsbay.ru/civilizations/', 
     'https://godsbay.ru/paint/', 
@@ -117,8 +145,8 @@ URLS_TO_PARSE = [
 ]
 
 def get_links():
-    """Возвращает список ссылок для обработки."""
-    all_links = []
+    """Возвращает список ссылок для обработки (без дубликатов)."""
+    all_links = set()  # 👈 используем множество для уникальности
     
     for url in URLS_TO_PARSE:
         print(f"🔗 Собираю ссылки с: {url}")
@@ -126,15 +154,17 @@ def get_links():
         
         if links:
             print(f"   📝 Найдено ссылок: {len(links)}")
-            all_links.extend(links)
+            all_links.update(links)  # 👈 добавляем в множество
         else:
             print("   ❌ Ссылок не найдено")
         
         time.sleep(1)
     
-    print(f"\n✅ ВСЕГО СОБРАНО ССЫЛОК: {len(all_links)}")
+    # Превращаем множество обратно в список
+    all_links = list(all_links)
+    
+    print(f"\n✅ ВСЕГО УНИКАЛЬНЫХ ССЫЛОК: {len(all_links)}")
     return all_links
-    #return ['https://azbyka.ru/otechnik/Biblia2/']
 
 
 if __name__ == "__main__":
