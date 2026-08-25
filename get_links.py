@@ -86,22 +86,22 @@ def extract_links_from_url(url, base_url=None):
 # 🔥 ЦИКЛ ПО СТРАНИЦАМ: 6 – 9 физика пройден, ИТ 23, МАТ 1-3, ХИМ 1-3, ПРАВО 1-3, ИСТОРИЯ 1-8
 # ═══════════════════════════════════════════════
 URLS_TO_PARSE = [
-    'https://cyberleninka.ru/article/c/health-biotechnology/1',
-    'https://cyberleninka.ru/article/c/health-biotechnology/2',
-    'https://cyberleninka.ru/article/c/health-biotechnology/3',
-    'https://cyberleninka.ru/article/c/health-biotechnology/4',
-    'https://cyberleninka.ru/article/c/health-biotechnology/5',
-    'https://cyberleninka.ru/article/c/health-biotechnology/6',
-    'https://cyberleninka.ru/article/c/health-biotechnology/7',
-    'https://cyberleninka.ru/article/c/health-biotechnology/8',    
-    'https://cyberleninka.ru/article/c/health-biotechnology/9',
-    'https://cyberleninka.ru/article/c/health-biotechnology/10',
-    'https://cyberleninka.ru/article/c/health-biotechnology/11',
-    'https://cyberleninka.ru/article/c/health-biotechnology/12',
-    'https://cyberleninka.ru/article/c/health-biotechnology/13',
-    'https://cyberleninka.ru/article/c/health-biotechnology/14',
-    'https://cyberleninka.ru/article/c/health-biotechnology/15',
-    'https://cyberleninka.ru/article/c/health-biotechnology/16',    
+    'https://cyberleninka.ru/article/c/nano-technology/1',
+    'https://cyberleninka.ru/article/c/nano-technology/2',
+    'https://cyberleninka.ru/article/c/nano-technology/3',
+    'https://cyberleninka.ru/article/c/nano-technology/4',
+    'https://cyberleninka.ru/article/c/nano-technology/5',
+    'https://cyberleninka.ru/article/c/nano-technology/6',
+    'https://cyberleninka.ru/article/c/nano-technology/7',
+    'https://cyberleninka.ru/article/c/nano-technology/8',    
+    'https://cyberleninka.ru/article/c/nano-technology/9',
+    'https://cyberleninka.ru/article/c/nano-technology/10',
+    'https://cyberleninka.ru/article/c/nano-technology/11',
+    'https://cyberleninka.ru/article/c/nano-technology/12',
+    'https://cyberleninka.ru/article/c/nano-technology/13',
+    'https://cyberleninka.ru/article/c/nano-technology/14',
+    'https://cyberleninka.ru/article/c/nano-technology/15',
+    'https://cyberleninka.ru/article/c/nano-technology/16',    
 ]
 
 def get_links():
