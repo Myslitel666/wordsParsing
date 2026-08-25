@@ -83,30 +83,11 @@ def extract_links_from_url(url, base_url=None):
 
 
 # ═══════════════════════════════════════════════
-# 🔥 ЦИКЛ ПО СТРАНИЦАМ: 6 – 9 физика пройден, ИТ 38, МАТ 1-3, ХИМ 1-3, ПРАВО 1-3, ИСТОРИЯ 1-8
+# 🔥 ЦИКЛ ПО СТРАНИЦАМ: 6 – 9 физика пройден, ИТ 59, МАТ 1-3, ХИМ 1-3, ПРАВО 1-3, ИСТОРИЯ 1-8
 # ═══════════════════════════════════════════════
 URLS_TO_PARSE = [
-    'https://cyberleninka.ru/article/c/computer-and-information-sciences/39',
-    'https://cyberleninka.ru/article/c/computer-and-information-sciences/40',
-    'https://cyberleninka.ru/article/c/computer-and-information-sciences/41',
-    'https://cyberleninka.ru/article/c/computer-and-information-sciences/42',
-    'https://cyberleninka.ru/article/c/computer-and-information-sciences/43',
-    'https://cyberleninka.ru/article/c/computer-and-information-sciences/44',
-    'https://cyberleninka.ru/article/c/computer-and-information-sciences/45',    
-    'https://cyberleninka.ru/article/c/computer-and-information-sciences/46',
-    'https://cyberleninka.ru/article/c/computer-and-information-sciences/47',
-    'https://cyberleninka.ru/article/c/computer-and-information-sciences/48',
-    'https://cyberleninka.ru/article/c/computer-and-information-sciences/49',
-    'https://cyberleninka.ru/article/c/computer-and-information-sciences/50',
-    'https://cyberleninka.ru/article/c/computer-and-information-sciences/51',
-    'https://cyberleninka.ru/article/c/computer-and-information-sciences/52',
-    'https://cyberleninka.ru/article/c/computer-and-information-sciences/53',    
-    'https://cyberleninka.ru/article/c/computer-and-information-sciences/54',
-    'https://cyberleninka.ru/article/c/computer-and-information-sciences/55',
-    'https://cyberleninka.ru/article/c/computer-and-information-sciences/56',
-    'https://cyberleninka.ru/article/c/computer-and-information-sciences/57',
-    'https://cyberleninka.ru/article/c/computer-and-information-sciences/58',
-    'https://cyberleninka.ru/article/c/computer-and-information-sciences/59', 
+    f'https://cyberleninka.ru/article/c/physical-sciences/{i}'
+    for i in range(10, 23)
 ]
 
 def get_links():
