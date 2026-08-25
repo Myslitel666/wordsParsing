@@ -50,6 +50,8 @@ def extract_russian_words_from_url(url):
                 # Если слово не написано капсом (не аббревиаутра) — добавляем
                 if w.isupper() and len(w) == 3:
                     words.add(w)  # аббревиатуры в исходном регистре
+                if  w.isupper() and len(w) != 3:
+                    continue
                 else:
                     words.add(w.lower())  # привет → привет
     
