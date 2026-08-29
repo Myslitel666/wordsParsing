@@ -59,7 +59,7 @@ def extract_russian_words_from_url(url):
 def update_words_in_db(words, url, db_path='words.db', max_retries=5):
     if len(words) < MIN_WORDS:
         print(f"   ⏭️ Пропущено: всего {len(words)} слов (меньше {MIN_WORDS})")
-        return 0, 0
+        return set(), set()
     
     for attempt in range(max_retries):
         try:
@@ -76,37 +76,30 @@ def update_words_in_db(words, url, db_path='words.db', max_retries=5):
                 conn.commit()
                 print("   ✅ Поле link добавлено!")
             
-            updated = 0
-            not_found = 0
+            updated_words = set()
+            not_found_words = set()
             
             for word in words:
                 try:
-                    # Проверяем, есть ли слово в базе
-                    cursor.execute('SELECT link FROM Words WHERE value = ?', (word,))
+                    # Проверяем, есть ли слово в базе и link пустой
+                    cursor.execute('SELECT link FROM Words WHERE value = ? AND link IS NULL', (word,))
                     result = cursor.fetchone()
                     
                     if result:
-                        current_link = result[0]
-                        
-                        # Если ссылка уже есть, добавляем через запятую
-                        if current_link:
-                            if url not in current_link.split(','):
-                                new_link = f"{current_link},{url}"
-                            else:
-                                new_link = current_link
-                        else:
-                            new_link = url
-                        
-                        # Обновляем запись сразу по value
-                        cursor.execute('UPDATE Words SET link = ? WHERE value = ?', (new_link, word))
+                        # Обновляем только если link пустой
+                        cursor.execute('UPDATE Words SET link = ? WHERE value = ? AND link IS NULL', (url, word))
                         conn.commit()
                         
                         if cursor.rowcount > 0:
-                            updated += 1
+                            updated_words.add(word)
                             print(f"✅ Обновлено: {word}")
                             log_word(word)
                     else:
-                        not_found += 1
+                        # Проверяем, существует ли слово вообще
+                        cursor.execute('SELECT value FROM Words WHERE value = ?', (word,))
+                        exists = cursor.fetchone()
+                        if not exists:
+                            not_found_words.add(word)
                         
                 except sqlite3.OperationalError as e:
                     if 'locked' in str(e):
@@ -118,8 +111,8 @@ def update_words_in_db(words, url, db_path='words.db', max_retries=5):
                         print(f"⚠️ Ошибка: {e}")
             
             conn.close()
-            print(f"   ➡️ Найдено слов на странице: {len(words)}, обновлено: {updated}, не найдено: {not_found}")
-            return updated, not_found
+            print(f"   ➡️ Найдено слов на странице: {len(words)}, обновлено: {len(updated_words)}, не найдено: {len(not_found_words)}")
+            return updated_words, not_found_words
             
         except sqlite3.OperationalError as e:
             if 'locked' in str(e) and attempt < max_retries - 1:
@@ -128,12 +121,12 @@ def update_words_in_db(words, url, db_path='words.db', max_retries=5):
                 continue
             else:
                 print(f"❌ Ошибка: {e}")
-                return 0, 0
+                return set(), set()
         except Exception as e:
             print(f"❌ Ошибка: {e}")
-            return 0, 0
+            return set(), set()
     
-    return 0, 0
+    return set(), set()
 
 def main():
     URLS = get_links()
@@ -142,9 +135,9 @@ def main():
         print("❌ Нет ссылок для обработки. Проверьте get_links.py")
         return
     
-    total_words = set()
-    total_updated = 0
-    total_not_found = 0
+    all_words = set()
+    all_updated_words = set()
+    all_not_found_words = set()
     
     for i, url in enumerate(URLS, 1):
         wait_for_internet()
@@ -154,18 +147,19 @@ def main():
         
         if words:
             print(f"   📝 Найдено {len(words)} слов")
-            updated, not_found = update_words_in_db(words, url)
-            total_updated += updated
-            total_not_found += not_found
-            total_words.update(words)
+            updated_words, not_found_words = update_words_in_db(words, url)
+            all_words.update(words)
+            all_updated_words.update(updated_words)
+            all_not_found_words.update(not_found_words)
         else:
             print("   ❌ Не удалось извлечь слова.")
         
         if i < len(URLS):
             time.sleep(1)
     
-    print(f"\n🎯 ВСЕГО УНИКАЛЬНЫХ СЛОВ СО ВСЕХ СТРАНИЦ: {len(total_words)}")
-    print(f"📊 ВСЕГО ОБНОВЛЕНО: {total_updated}, НЕ НАЙДЕНО: {total_not_found}")
+    print(f"\n🎯 ВСЕГО УНИКАЛЬНЫХ СЛОВ СО ВСЕХ СТРАНИЦ: {len(all_words)}")
+    print(f"📊 ВСЕГО УНИКАЛЬНЫХ ОБНОВЛЕННЫХ СЛОВ: {len(all_updated_words)}")
+    print(f"📊 ВСЕГО УНИКАЛЬНЫХ НЕ НАЙДЕННЫХ СЛОВ: {len(all_not_found_words)}")
 
 if __name__ == "__main__":
     main()
