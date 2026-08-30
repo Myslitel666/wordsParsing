@@ -86,35 +86,9 @@ def extract_links_from_url(url, base_url=None):
 # 🔥 ЦИКЛ ПО СТРАНИЦАМ: 6 – 9 физика пройден, ИТ 59, МАТ 1-3, ХИМ 1-3, ПРАВО 1-3, ИСТОРИЯ 1-8
 # ═══════════════════════════════════════════════
 URLS_TO_PARSE = [
-    'https://godsbay.ru/all.html',      # А
-    'https://godsbay.ru/all_b.html',    # Б
-    'https://godsbay.ru/all_v.html',    # В
-    'https://godsbay.ru/all_g.html',    # Г
-    'https://godsbay.ru/all_d.html',    # Д
-    'https://godsbay.ru/all_e.html',    # Е
-    'https://godsbay.ru/all_j.html',    # Ж
-    'https://godsbay.ru/all_z.html',    # З
-    'https://godsbay.ru/all_i.html',    # И
-    'https://godsbay.ru/all1.html',     # К
-    'https://godsbay.ru/all_l.html',    # Л
-    'https://godsbay.ru/all_m.html',    # М
-    'https://godsbay.ru/all_n.html',    # Н
-    'https://godsbay.ru/all_o.html',    # О
-    'https://godsbay.ru/all_p.html',    # П
-    'https://godsbay.ru/all_r.html',    # Р
-    'https://godsbay.ru/all_s.html',    # С
-    'https://godsbay.ru/all_t.html',    # Т
-    'https://godsbay.ru/all2.html',     # У
-    'https://godsbay.ru/all_f.html',    # Ф
-    'https://godsbay.ru/all_h.html',    # Х
-    'https://godsbay.ru/all_zt.html',   # Ц
-    'https://godsbay.ru/all_ch.html',   # Ч
-    'https://godsbay.ru/all_sh.html',   # Ш
-    'https://godsbay.ru/all_ye.html',   # Э
-    'https://godsbay.ru/all_yu.html',   # Ю
-    'https://godsbay.ru/all_ya.html',   # Я
-    #f'https://cyberleninka.ru/article/c/agricultural-biotechnology/{i}'
-    #for i in range(1, 4)
+    #'http://az.lib.ru/t/tolstoj_lew_nikolaewich/'
+    f'https://cyberleninka.ru/article/c/physical-sciences/{i}'
+    for i in range(1, 9)
 ]
 
 def get_links():
