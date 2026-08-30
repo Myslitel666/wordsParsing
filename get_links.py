@@ -86,9 +86,11 @@ def extract_links_from_url(url, base_url=None):
 # 🔥 ЦИКЛ ПО СТРАНИЦАМ: 6 – 9 (1 - 9) физика пройден, ИТ 59 (1 - 60), МАТ 1-3, ХИМ 1-3, ПРАВО 1-3, ИСТОРИЯ 1-8
 # ═══════════════════════════════════════════════
 URLS_TO_PARSE = [
-    #'https://azbyka.ru/otechnik/Ignatij_Brjanchaninov/'
-    f'https://cyberleninka.ru/article/c/computer-and-information-sciences/{i}'
-    for i in range(1, 60)
+    'http://az.lib.ru/l/lermontow_m_j/',
+    'http://az.lib.ru/p/pushkin_a_s/',
+    'https://lib.ru/INOOLD/WORLD/'
+    #f'https://cyberleninka.ru/article/c/computer-and-information-sciences/{i}'
+    #for i in range(40, 60)
 ]
 
 def get_links():
