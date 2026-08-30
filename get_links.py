@@ -87,7 +87,7 @@ def extract_links_from_url(url, base_url=None):
 # ═══════════════════════════════════════════════
 URLS_TO_PARSE = [
     #'http://az.lib.ru/t/tolstoj_lew_nikolaewich/'
-    f'https://cyberleninka.ru/article/c/physical-sciences/{i}'
+    f'https://cyberleninka.ru/article/c/computer-and-information-sciences/{i}'
     for i in range(1, 9)
 ]
 
