@@ -86,72 +86,33 @@ def extract_links_from_url(url, base_url=None):
 # 🔥 ЦИКЛ ПО СТРАНИЦАМ: 6 – 9 (1 - 9) физика пройден, ИТ 59 (1 - 60), МАТ 1-3, ХИМ 1-3, ПРАВО 1-3, ИСТОРИЯ 1-8
 # ═══════════════════════════════════════════════
 URLS_TO_PARSE = [
-    'https://azbyka.ru/otechnik/'
+    'https://azbyka.ru/otechnik/Ioann_Zlatoust/protiv-anomeev/'
     #f'https://cyberleninka.ru/article/c/computer-and-information-sciences/{i}'
     #for i in range(40, 60)
 ]
 
 def get_links():
-    """
-    Собирает ссылки с глубиной 2 (начальные страницы + все найденные).
-    Без ограничения по количеству страниц.
-    """
-    all_links = set()
-    visited = set()
-    queue = list(URLS_TO_PARSE)
-    page_count = 0
+    """Возвращает список ссылок для обработки (без дубликатов)."""
+    all_links = set()  # 👈 используем множество для уникальности
     
-    # Уровни глубины
-    current_depth = 1
-    next_level_urls = []
-    
-    print("🚀 Начинаем сбор ссылок (глубина 2)...")
-    
-    while queue:
-        url = queue.pop(0)
-        
-        if url in visited:
-            continue
-        
-        visited.add(url)
-        page_count += 1
-        
-        print(f"\n🔗 [{page_count}] Собираю ссылки с: {url} (глубина {current_depth})")
+    for url in URLS_TO_PARSE:
+        print(f"🔗 Собираю ссылки с: {url}")
         links = extract_links_from_url(url)
         
         if links:
             print(f"   📝 Найдено ссылок: {len(links)}")
-            
-            new_links = 0
-            for link in links:
-                if link not in visited:
-                    all_links.add(link)
-                    new_links += 1
-                    # Если мы на глубине 1, добавляем ссылки в очередь для второго уровня
-                    if current_depth == 1:
-                        next_level_urls.append(link)
-            
-            print(f"   ➡️ Новых ссылок: {new_links}")
-            print(f"   📊 Всего уникальных ссылок собрано: {len(all_links)}")
+            all_links.update(links)  # 👈 добавляем в множество
         else:
             print("   ❌ Ссылок не найдено")
         
-        # Если очередь пуста и есть ссылки для следующего уровня
-        if not queue and next_level_urls and current_depth == 1:
-            print(f"\n📂 Переходим на глубину 2...")
-            print(f"   ➡️ Обработано страниц уровня 1: {page_count}")
-            print(f"   ➡️ Найдено ссылок для уровня 2: {len(next_level_urls)}")
-            queue = list(next_level_urls)
-            next_level_urls = []
-            current_depth = 2
-        
-        # Задержка между запросами (чтобы не забанили)
-        time.sleep(1)  # Оставляем 1 секунду, как у вас было
+        time.sleep(1)
     
+    # Превращаем множество обратно в список
     all_links = list(all_links)
-    print(f"\n✅ ИТОГО ОБРАБОТАНО СТРАНИЦ: {page_count}")
-    print(f"✅ ВСЕГО УНИКАЛЬНЫХ ССЫЛОК СОБРАНО: {len(all_links)}")
+    
+    print(f"\n✅ ВСЕГО УНИКАЛЬНЫХ ССЫЛОК: {len(all_links)}")
     return all_links
+
 
 if __name__ == "__main__":
     links = get_links()
