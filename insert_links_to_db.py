@@ -111,20 +111,32 @@ def extract_links_from_url(url, base_url=None):
     parsed_base = urlparse(base_url)
     
     for raw_link in raw_links:
+        # Пропускаем пустые, якоря и javascript
         if not raw_link or raw_link.startswith('#') or raw_link.startswith('javascript:'):
             continue
             
+        # Склеиваем относительную ссылку с базовым URL
         full_url = urljoin(base_url, raw_link)
         
+        # 🔥 ПРОПУСКАЕМ ЯКОРНЫЕ ССЫЛКИ (содержат только #)
         if '#' in full_url:
-            full_url = full_url.split('#')[0]
+            # Обрезаем якорь
+            base_without_fragment = full_url.split('#')[0]
+            # Если после обрезания якоря остался только базовый URL - пропускаем
+            if base_without_fragment == base_url or base_without_fragment == base_url + '/':
+                continue
+            # Иначе используем URL без якоря
+            full_url = base_without_fragment
         
+        # Пропускаем файлы с расширениями
         if full_url.lower().endswith(SKIP_EXTENSIONS):
             continue
         
+        # Проверяем чёрный список
         if is_blacklisted(full_url):
             continue
         
+        # Оставляем только ссылки на тот же домен
         parsed_full = urlparse(full_url)
         if parsed_base.netloc == parsed_full.netloc and full_url not in seen:
             seen.add(full_url)
@@ -202,56 +214,39 @@ def is_link_processed(conn, url):
     return cursor.fetchone() is not None
 
 def collect_links():
-    """Основная функция сбора ссылок (глубина 3) с ИСПРАВЛЕННОЙ ПРОВЕРКОЙ."""
+    """Основная функция сбора ссылок (3 вложенных цикла)."""
     URLS_TO_PARSE = ['https://azbyka.ru/otechnik/']
-    
-    with open(DEBUG_FILE, 'w', encoding='utf-8') as f:
-        f.write(f"=== ОТЛАДОЧНЫЙ ЛОГ ЗАПУСКА {time.strftime('%Y-%m-%d %H:%M:%S')} ===\n")
-    
-    debug_log("🚀 НАЧАЛО СБОРА ССЫЛОК (глубина 3)")
-    debug_log(f"📌 URLS_TO_PARSE: {URLS_TO_PARSE}")
     
     init_database()
     conn = sqlite3.connect(DB_PATH, timeout=10)
     
     all_links = set()
-    queue = list(URLS_TO_PARSE)
     page_count = 0
-    current_depth = 1
-    next_level_urls = []
-    next_next_level_urls = []
     
-    print("🚀 Начинаем сбор ссылок (глубина 3)...")
+    print("🚀 Начинаем сбор ссылок...")
     wait_for_internet()
     
-    iteration = 0
+    # ══════════════════════════════════════════
+    # 🔥 ШАГ 1: Собираем всех авторов (отёчник → буквы → авторы)
+    # ══════════════════════════════════════════
+    print("\n📚 ШАГ 1: Собираю авторов...")
+    
+    authors = []
+    queue = list(URLS_TO_PARSE)  # Начинаем с отёчника
+    
     while queue:
-        iteration += 1
         url = queue.pop(0)
         
-        # ═══════════════════════════════════════
-        # 🔥 ИСПРАВЛЕННАЯ ПРОВЕРКА
-        # ═══════════════════════════════════════
         cursor = conn.cursor()
         cursor.execute('SELECT processed FROM Links WHERE url = ?', (url,))
         row = cursor.fetchone()
         
         if row is not None and row[0] == 1:
-            debug_log(f"⏭️ ПРОПУСКАЮ (уже обработана)", {"url": url})
             print(f"⏭️ Пропускаю (уже обработана): {url}")
             continue
-        elif row is not None and row[0] == 0:
-            debug_log(f"🔄 ОБРАБАТЫВАЮ (есть в базе, не обработана)", {"url": url})
-            print(f"🔄 Обрабатываю (есть в базе, не обработана): {url}")
-        else:
-            debug_log(f"🆕 НОВАЯ ССЫЛКА (нет в базе)", {"url": url})
-            print(f"🆕 Новая ссылка: {url}")
         
-        # ═══════════════════════════════════════
-        # 🔥 ОСНОВНАЯ ОБРАБОТКА
-        # ═══════════════════════════════════════
         page_count += 1
-        print(f"\n🔗 [{page_count}] Собираю ссылки с: {url} (глубина {current_depth})")
+        print(f"\n🔗 [{page_count}] Собираю авторов с: {url}")
         
         wait_for_internet()
         links = extract_links_from_url(url)
@@ -261,62 +256,139 @@ def collect_links():
             
             new_links = []
             for link in links:
-                # Проверяем, есть ли ссылка в базе (неважно, processed или нет)
                 cursor = conn.cursor()
                 cursor.execute('SELECT 1 FROM Links WHERE url = ?', (link,))
                 if cursor.fetchone() is None:
                     new_links.append(link)
                     all_links.add(link)
                     
-                    if current_depth == 1:
-                        next_level_urls.append(link)
-                    elif current_depth == 2:
-                        next_next_level_urls.append(link)
+                    # Если это страница автора — запоминаем для вложенного цикла
+                    if '/otechnik/' in link and link.count('/') == 4:
+                        authors.append(link)
+                    else:
+                        queue.append(link)  # Промежуточные страницы (буквы)
             
             print(f"   ➡️ Новых ссылок: {len(new_links)}")
             print(f"   📊 Всего уникальных ссылок собрано: {len(all_links)}")
-            print(f"   📊 Очередь уровня 2: {len(next_level_urls)} ссылок")
-            print(f"   📊 Очередь уровня 3: {len(next_next_level_urls)} ссылок")
+            print(f"   📊 Найдено авторов: {len(authors)}")
             
             if new_links:
                 save_links_to_db(conn, new_links)
-            
-            # Помечаем текущую страницу как обработанную
-            mark_as_processed(conn, url)
-            print(f"   ✅ Страница помечена как обработанная")
         else:
             print("   ❌ Ссылок не найдено")
-            mark_as_processed(conn, url)
-        
-        # ═══════════════════════════════════════
-        # 🔥 ПЕРЕХОД НА СЛЕДУЮЩИЙ УРОВЕНЬ
-        # ═══════════════════════════════════════
-        if not queue:
-            if current_depth == 1 and next_level_urls:
-                print(f"\n📂 ПЕРЕХОДИМ на глубину 2...")
-                print(f"   ➡️ Найдено ссылок для уровня 2: {len(next_level_urls)}")
-                queue = list(next_level_urls)
-                next_level_urls = []
-                current_depth = 2
-                print(f"   ✅ Теперь глубина: {current_depth}, очередь: {len(queue)}")
-                
-            elif current_depth == 2 and next_next_level_urls:
-                print(f"\n📂 ПЕРЕХОДИМ на глубину 3...")
-                print(f"   ➡️ Найдено ссылок для уровня 3: {len(next_next_level_urls)}")
-                queue = list(next_next_level_urls)
-                next_next_level_urls = []
-                current_depth = 3
-                print(f"   ✅ Теперь глубина: {current_depth}, очередь: {len(queue)}")
-                
-            else:
-                print(f"⚠️ НЕТ ССЫЛОК ДЛЯ ПЕРЕХОДА!")
-                print(f"   current_depth={current_depth}")
-                print(f"   next_level_urls={len(next_level_urls)}")
-                print(f"   next_next_level_urls={len(next_next_level_urls)}")
-        else:
-            print(f"⏳ В очереди осталось {len(queue)} ссылок")
         
         time.sleep(DELAY_BETWEEN_REQUESTS)
+    
+    # ══════════════════════════════════════════
+    # 🔥 ШАГ 2: ВЛОЖЕННЫЙ ЦИКЛ ПО АВТОРАМ → КНИГАМ → ГЛАВАМ
+    # ══════════════════════════════════════════
+    print(f"\n📚 ШАГ 2: Обрабатываю {len(authors)} авторов...")
+    
+    for author_url in authors:
+        print(f"\n📖 Обрабатываю автора: {author_url}")
+        
+        # Проверяем, обработан ли уже автор
+        cursor = conn.cursor()
+        cursor.execute('SELECT processed FROM Links WHERE url = ?', (author_url,))
+        row = cursor.fetchone()
+        
+        if row is not None and row[0] == 1:
+            print(f"⏭️ Пропускаю (уже обработан): {author_url}")
+            continue
+        
+        # ══════════════════════════════════════
+        # 🔥 ЦИКЛ 1: КНИГИ АВТОРА
+        # ══════════════════════════════════════
+        print(f"   📚 Собираю книги автора {author_url}...")
+        
+        books = []
+        page_count += 1
+        
+        wait_for_internet()
+        links = extract_links_from_url(author_url)
+        
+        if links:
+            print(f"   📝 Найдено ссылок: {len(links)}")
+            
+            new_links = []
+            for link in links:
+                cursor = conn.cursor()
+                cursor.execute('SELECT 1 FROM Links WHERE url = ?', (link,))
+                if cursor.fetchone() is None:
+                    new_links.append(link)
+                    all_links.add(link)
+                    
+                    # Если это страница книги — запоминаем для вложенного цикла
+                    if '/otechnik/' in link and link.count('/') == 5:
+                        books.append(link)
+            
+            print(f"   ➡️ Новых ссылок: {len(new_links)}")
+            print(f"   📊 Всего уникальных ссылок собрано: {len(all_links)}")
+            print(f"   📊 Найдено книг: {len(books)}")
+            
+            if new_links:
+                save_links_to_db(conn, new_links)
+        else:
+            print("   ❌ Ссылок не найдено")
+        
+        # ══════════════════════════════════════
+        # 🔥 ЦИКЛ 2: ГЛАВЫ КНИГ
+        # ══════════════════════════════════════
+        for book_url in books:
+            print(f"\n   📖 Обрабатываю книгу: {book_url}")
+            
+            # Проверяем, обработана ли уже книга
+            cursor = conn.cursor()
+            cursor.execute('SELECT processed FROM Links WHERE url = ?', (book_url,))
+            row = cursor.fetchone()
+            
+            if row is not None and row[0] == 1:
+                print(f"   ⏭️ Пропускаю (уже обработана): {book_url}")
+                continue
+            
+            page_count += 1
+            
+            wait_for_internet()
+            links = extract_links_from_url(book_url)
+            
+            if links:
+                print(f"   📝 Найдено ссылок: {len(links)}")
+                
+                new_links = []
+                for link in links:
+                    cursor = conn.cursor()
+                    cursor.execute('SELECT 1 FROM Links WHERE url = ?', (link,))
+                    if cursor.fetchone() is None:
+                        new_links.append(link)
+                        all_links.add(link)
+                        # Это главы — добавляем в базу, но не запоминаем
+                
+                print(f"   ➡️ Новых ссылок: {len(new_links)}")
+                print(f"   📊 Всего уникальных ссылок собрано: {len(all_links)}")
+                
+                if new_links:
+                    save_links_to_db(conn, new_links)
+            else:
+                print("   ❌ Ссылок не найдено")
+            
+            # ✅ Книга обработана → ставим processed=1
+            mark_as_processed(conn, book_url)
+            print(f"   ✅ Книга помечена как обработанная (processed=1)")
+            
+            time.sleep(DELAY_BETWEEN_REQUESTS)
+        
+        # ✅ Автор обработан → ставим processed=1
+        mark_as_processed(conn, author_url)
+        print(f"   ✅ Автор помечен как обработанный (processed=1)")
+        
+        time.sleep(DELAY_BETWEEN_REQUESTS)
+    
+    # ══════════════════════════════════════════
+    # 🔥 ФИНАЛ: отёчник
+    # ══════════════════════════════════════════
+    print(f"\n🏁 СКРИПТ ЗАВЕРШЁН! Помечаю отёчник как обработанный...")
+    mark_as_processed(conn, 'https://azbyka.ru/otechnik/')
+    print(f"   ✅ Отёчник помечен как обработанный (processed=1)")
     
     conn.close()
     
