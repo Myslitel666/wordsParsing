@@ -105,8 +105,9 @@ def save_words_to_db(words, db_path='words.db', max_retries=5):
             for word in words:
                 try:
                     cursor.execute('INSERT OR IGNORE INTO Words (value) VALUES (?)', (word,))
-                    conn.commit()
-                    
+                    conn.commit() # НУЖНО МИНИМИЗИРОВАТЬ КОЛ-ВО КОММИТОВ (СДЕЛАТЬ, КАК В UPDATE, СНАЧАЛА СМОТРЕТЬ ЕСТЬ ЛИ СЛОВО В 
+                                  # БАЗЕ ЧЕРЕЗ SELECT, И ЕСЛИ НЕТ, ТО ДЕЛАТЬ INSERT ТОЛЬКО ПОСЛЕ ПОЛЕЗНОЙ ВСТАВКИ. А ЛУЧШЕ ДЕЛАТЬ 
+                                  # COMMIT ЧЕРЕЗ 100-200 ПОЛЕЗНЫХ ВСТАВОК)
                     if cursor.rowcount > 0:
                         inserted += 1
                         print(f"✅ Записано: {word}")
