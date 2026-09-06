@@ -3,6 +3,7 @@ import sqlite3
 import requests
 import time
 import socket
+import random
 from get_links import get_links
 
 MIN_WORDS = 50
@@ -57,7 +58,7 @@ def extract_russian_words_from_url(url):
     
     return sorted(words)
 
-def save_words_to_db(words, db_path='words.db', max_retries=5):
+def save_words_to_db(words, url, db_path='words.db', max_retries=5):
     if len(words) < MIN_WORDS:
         print(f"   ⏭️ Пропущено: всего {len(words)} слов (меньше {MIN_WORDS})")
         return
@@ -105,7 +106,7 @@ def save_words_to_db(words, db_path='words.db', max_retries=5):
             
             for word in words:
                 try: 
-                    cursor.execute('INSERT OR IGNORE INTO Words (value) VALUES (?)', (word,))
+                    cursor.execute('INSERT OR IGNORE INTO Words (value,link) VALUES (?,?)', (word,url,))
                     #conn.commit() 
                     if cursor.rowcount > 0:
                         inserted += 1
@@ -169,12 +170,14 @@ def main():
         
         if words:
             print(f"   📝 Найдено {len(words)} слов")
-            save_words_to_db(words)
+            save_words_to_db(words,url)
             total_words.update(words)
         else:
             print("   ❌ Не удалось извлечь слова.")
         
         if i < len(URLS):
+            #delay = random.uniform(0.5, 1.5)
+            #time.sleep(delay)
             time.sleep(1)
     
     print(f"\n🎯 ВСЕГО УНИКАЛЬНЫХ СЛОВ СО ВСЕХ СТРАНИЦ: {len(total_words)}")
