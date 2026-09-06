@@ -101,17 +101,21 @@ def save_words_to_db(words, db_path='words.db', max_retries=5):
             
             inserted = 0
             skipped = 0
+            counter = 0  # Счётчик итераций (любых)
             
             for word in words:
-                try:
+                try: 
                     cursor.execute('INSERT OR IGNORE INTO Words (value) VALUES (?)', (word,))
-                    conn.commit() # НУЖНО МИНИМИЗИРОВАТЬ КОЛ-ВО КОММИТОВ (СДЕЛАТЬ, КАК В UPDATE, СНАЧАЛА СМОТРЕТЬ ЕСТЬ ЛИ СЛОВО В 
-                                  # БАЗЕ ЧЕРЕЗ SELECT, И ЕСЛИ НЕТ, ТО ДЕЛАТЬ INSERT ТОЛЬКО ПОСЛЕ ПОЛЕЗНОЙ ВСТАВКИ. А ЛУЧШЕ ДЕЛАТЬ 
-                                  # COMMIT ЧЕРЕЗ 100-200 ПОЛЕЗНЫХ ВСТАВОК)
+                    #conn.commit() 
                     if cursor.rowcount > 0:
                         inserted += 1
+                        counter += 1
                         print(f"✅ Записано: {word}")
                         log_word(word)
+
+                        if counter >= 1000:
+                          conn.commit() 
+                          counter = 0
                     else:
                         skipped += 1
                         
@@ -123,6 +127,11 @@ def save_words_to_db(words, db_path='words.db', max_retries=5):
                         break
                     else:
                         print(f"⚠️ Ошибка: {e}")
+
+            # 🔥 ФИНАЛЬНЫЙ КОММИТ ДЛЯ ОСТАВШИХСЯ СЛОВ (ЕСЛИ ИХ МЕНЬШЕ 1000)
+            if counter > 0:
+                conn.commit()
+                print(f"   💾 Финальный коммит для {counter} слов")
             
             conn.close()
             print(f"   ➡️ Вставлено: {inserted}, пропущено: {skipped}")
